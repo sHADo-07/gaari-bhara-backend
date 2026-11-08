@@ -1,0 +1,32 @@
+# Development services for the whole team:   docker compose up -d
+# Postgres is required. Redis is NOT needed for the midterm (it is here for live chat later:
+#   docker compose --profile later up -d).
+services:
+  postgres:
+    image: postgres:16
+    container_name: gaari-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: gaari
+      POSTGRES_PASSWORD: gaari_dev_password
+      POSTGRES_DB: gaari_bhara
+    ports:
+      - "5432:5432"
+    volumes:
+      - gaari_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gaari -d gaari_bhara"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    container_name: gaari-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    profiles: ["later"]
+
+volumes:
+  gaari_pgdata:

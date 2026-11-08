@@ -1,0 +1,22 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "setupFiles": ["<rootDir>/setup-env.ts"],
+  "testTimeout": 30000,
+  "transform": {
+    "^.+\\.(t|j)s$": ["ts-jest", { "tsconfig": "<rootDir>/../tsconfig.json", "isolatedModules": true, "diagnostics": false }]
+  },
+  "moduleNameMapper": {
+    "^@/src/(.*)$": "<rootDir>/../src/$1",
+    "^@/types/(.*)$": "<rootDir>/../src/@types/$1",
+    "^@/common/(.*)$": "<rootDir>/../src/common/$1",
+    "^@/config/(.*)$": "<rootDir>/../src/config/$1",
+    "^@/database/(.*)$": "<rootDir>/../src/database/$1",
+    "^@/jobs/(.*)$": "<rootDir>/../src/jobs/$1",
+    "^@/mails/(.*)$": "<rootDir>/../src/mails/$1",
+    "^@/modules/(.*)$": "<rootDir>/../src/modules/$1",
+    "^@/providers/(.*)$": "<rootDir>/../src/providers/$1"
+  }
+}
