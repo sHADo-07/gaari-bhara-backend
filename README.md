@@ -96,19 +96,32 @@ The tables of all modules already exist (see `src/database/migrations`). You wri
 | `GET /users/me`, `PATCH /users/me` | signed in | My profile, edit name and phone |
 | `GET /admin/users` | admin | List users (pages, `role`, `status`, `q`) |
 | `PATCH /admin/users/:id/suspend`, `/restore` | admin | Suspend or restore (tokens stop working at once) |
+| `GET /admin/audit-logs`, `/:id` | admin | Read the audit log (filters: `userId`, `entity`, `entityId`, `action`, `from`, `to`; pages) |
 | `GET /health` | everyone | Health check with a database ping |
 
 Security done: Argon2id password hashes; real token check (signature, expiry, logout list, suspended user,
 password change); same answer for "wrong password" and "no such email"; sign-up/login rate limit
 (10 per minute per IP); unknown fields rejected; helmet headers; admin accounts only from the seed, never from sign-up.
 
+### Bonus features (built in, nothing to import)
+
+| Feature | Where | What it does |
+| --- | --- | --- |
+| Middleware | `src/common/middlewares/request-logger.middleware.ts` | Adds `X-Request-Id` and writes one log line per request (method, path, status, time) |
+| Interceptor | `src/common/interceptors/timing.interceptor.ts` | Adds `X-Response-Time`; warns in the log when a route takes more than 500 ms |
+| Audit log | `src/modules/audit/` | Every successful POST, PATCH, PUT, DELETE is saved in `audit_logs` (user, entity, record id, body without passwords, IP, time). Admin reads it with `GET /admin/audit-logs` |
+
+Other modules can also save the OLD value with `AuditService.record({ ..., oldValue, newValue })`.
+
 ## 5. Tests
 
-`pnpm test` runs 67 tests against a real PostgreSQL database:
+`pnpm test` runs 82 tests against a real PostgreSQL database:
 
 * `test/auth.e2e-spec.ts`: register, login, tokens, logout, profile, password change, roles, admin, suspend.
 * `test/database.e2e-spec.ts`: the database rules from the manual (unique, checks, no overlapping rents,
   one review per side, one chat per pair per post, a concurrency test with 20 people booking the same dates).
+
+* `test/bonus.e2e-spec.ts`: request id and timing headers, audit log saving, password hiding, filters, admin-only access.
 
 Add checks for your own tables to the database test file.
 

@@ -4,6 +4,7 @@ import { CreateLookups1730000000002 } from "../../src/database/migrations/173000
 import { CreatePosts1730000000003 } from "../../src/database/migrations/1730000000003-CreatePosts";
 import { CreateRentsAndReviews1730000000004 } from "../../src/database/migrations/1730000000004-CreateRentsAndReviews";
 import { CreateChat1730000000005 } from "../../src/database/migrations/1730000000005-CreateChat";
+import { CreateAuditLogs1730000000006 } from "../../src/database/migrations/1730000000006-CreateAuditLogs";
 
 const connection = (database: string) => ({
   type: "postgres" as const,
@@ -38,6 +39,7 @@ export async function resetDatabase() {
       CreatePosts1730000000003,
       CreateRentsAndReviews1730000000004,
       CreateChat1730000000005,
+      CreateAuditLogs1730000000006,
     ],
   });
   await ds.initialize();

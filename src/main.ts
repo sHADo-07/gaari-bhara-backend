@@ -4,7 +4,6 @@ import { Logger } from "@nestjs/common";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { join } from "path";
-import { Request, Response, NextFunction } from "express";
 import { AppModule } from "@/src/app.module";
 import { appConfig } from "@/config/app.config";
 import { configureApp, setupSwagger } from "@/src/app.setup";
@@ -35,12 +34,6 @@ async function bootstrap() {
       crossOriginResourcePolicy: { policy: "cross-origin" },
     }),
   );
-
-  // Simple request log (no tokens, no bodies)
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    new Logger("HTTP").log(`${req.method} ${req.originalUrl.split("?")[0]}`);
-    next();
-  });
 
   app.use(cookieParser());
   app.enableCors({

@@ -5,6 +5,7 @@ import { CreateLookups1730000000002 } from "../src/database/migrations/173000000
 import { CreatePosts1730000000003 } from "../src/database/migrations/1730000000003-CreatePosts";
 import { CreateRentsAndReviews1730000000004 } from "../src/database/migrations/1730000000004-CreateRentsAndReviews";
 import { CreateChat1730000000005 } from "../src/database/migrations/1730000000005-CreateChat";
+import { CreateAuditLogs1730000000006 } from "../src/database/migrations/1730000000006-CreateAuditLogs";
 
 /**
  * Database checks from the manual (Part 6). They prove that the RULES live in the database,
@@ -96,11 +97,12 @@ describe("Database rules (migrations from an empty database)", () => {
         CreatePosts1730000000003,
         CreateRentsAndReviews1730000000004,
         CreateChat1730000000005,
+        CreateAuditLogs1730000000006,
       ],
     });
     await ds.initialize();
     try {
-      for (let i = 0; i < 5; i++) await ds.undoLastMigration();
+      for (let i = 0; i < 6; i++) await ds.undoLastMigration();
       const left = await ds.query(`SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name <> 'migrations'`);
       expect(left).toHaveLength(0);
       const types = await ds.query(`SELECT typname FROM pg_type t JOIN pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname='public' AND t.typtype='e'`);
