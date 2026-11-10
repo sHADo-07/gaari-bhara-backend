@@ -9,6 +9,7 @@ import { appConfig } from "@/config/app.config";
 import { UsersModule } from "@/modules/users/users.module";
 import { AuthModule } from "@/modules/auth/auth.module";
 import { AuditModule } from "@/modules/audit/audit.module";
+import { CatalogModule } from "@/modules/catalog/catalog.module";
 import { PostsModule } from "@/modules/post/posts.module";
 import { RequestLoggerMiddleware } from "@/common/middlewares/request-logger.middleware";
 import { TimingInterceptor } from "@/common/interceptors/timing.interceptor";
@@ -29,6 +30,7 @@ import { TimingInterceptor } from "@/common/interceptors/timing.interceptor";
     UsersModule,
     AuthModule,
     AuditModule,
+    CatalogModule,
     PostsModule,
   ],
   controllers: [AppController],
