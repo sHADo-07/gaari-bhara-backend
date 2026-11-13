@@ -2,6 +2,7 @@ import { Controller, Get, Query } from "@nestjs/common";
 import { ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { CatalogService } from "@/modules/catalog/catalog.service";
 
+/** Public lists the frontend and Swagger need to get the ids for categoryId / districtId. */
 @ApiTags("Catalog")
 @Controller()
 export class CatalogController {

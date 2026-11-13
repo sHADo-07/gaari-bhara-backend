@@ -1,3 +1,5 @@
+declare const process: { env: Record<string, string | undefined> };
+
 import { DataSource } from "typeorm";
 import { CreateUsersAndAuth1730000000001 } from "../../src/database/migrations/1730000000001-CreateUsersAndAuth";
 import { CreateLookups1730000000002 } from "../../src/database/migrations/1730000000002-CreateLookups";
@@ -5,19 +7,20 @@ import { CreatePosts1730000000003 } from "../../src/database/migrations/17300000
 import { CreateRentsAndReviews1730000000004 } from "../../src/database/migrations/1730000000004-CreateRentsAndReviews";
 import { CreateChat1730000000005 } from "../../src/database/migrations/1730000000005-CreateChat";
 import { CreateAuditLogs1730000000006 } from "../../src/database/migrations/1730000000006-CreateAuditLogs";
+import { AddPostModerationAndImageConstraints1730000000007 } from "../../src/database/migrations/1730000000007-AddPostModerationAndImageConstraints";
 
 const connection = (database: string) => ({
   type: "postgres" as const,
   host: process.env.DB_HOST || "localhost",
   port: Number(process.env.DB_PORT || 5432),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  username: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "1234",
   database,
 });
 
 /** Creates the "_test" database if it is missing (so nobody has to do it by hand). */
 async function ensureTestDatabase() {
-  const name = process.env.DB_DATABASE!;
+  const name = process.env.DB_DATABASE || "car-rent";
   const admin = new DataSource(connection("postgres"));
   await admin.initialize();
   try {
@@ -32,7 +35,7 @@ async function ensureTestDatabase() {
 export async function resetDatabase() {
   await ensureTestDatabase();
   const ds = new DataSource({
-    ...connection(process.env.DB_DATABASE!),
+    ...connection(process.env.DB_DATABASE || "car-rent"),
     migrations: [
       CreateUsersAndAuth1730000000001,
       CreateLookups1730000000002,
@@ -40,6 +43,7 @@ export async function resetDatabase() {
       CreateRentsAndReviews1730000000004,
       CreateChat1730000000005,
       CreateAuditLogs1730000000006,
+      AddPostModerationAndImageConstraints1730000000007,
     ],
   });
   await ds.initialize();
@@ -53,5 +57,5 @@ export async function resetDatabase() {
 }
 
 export function openDb() {
-  return new DataSource(connection(process.env.DB_DATABASE!)).initialize();
+  return new DataSource(connection(process.env.DB_DATABASE || "car-rent")).initialize();
 }

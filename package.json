@@ -22,7 +22,8 @@
     "migration:rollbackAll": "ts-node -r tsconfig-paths/register ./src/script/typeorm_migration_rollback_all.ts",
     "entity:create": "typeorm-ts-node-commonjs entity:create",
     "seed:demo": "ts-node -r tsconfig-paths/register ./src/script/seed_demo.ts",
-    "db:reset": "ts-node -r tsconfig-paths/register ./src/script/db_reset.ts"
+    "db:reset": "ts-node -r tsconfig-paths/register ./src/script/db_reset.ts",
+    "seed:posts": "ts-node -r tsconfig-paths/register src/database/seeders/seed-demo-posts.ts"
   },
   "dependencies": {
     "@nest-lab/throttler-storage-redis": "^1.1.0",
