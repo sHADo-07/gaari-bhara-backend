@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 import { DataSource } from "typeorm";
 import { openDb, resetDatabase } from "./helpers/db";
 import { CreateUsersAndAuth1730000000001 } from "../src/database/migrations/1730000000001-CreateUsersAndAuth";
@@ -6,11 +7,8 @@ import { CreatePosts1730000000003 } from "../src/database/migrations/17300000000
 import { CreateRentsAndReviews1730000000004 } from "../src/database/migrations/1730000000004-CreateRentsAndReviews";
 import { CreateChat1730000000005 } from "../src/database/migrations/1730000000005-CreateChat";
 import { CreateAuditLogs1730000000006 } from "../src/database/migrations/1730000000006-CreateAuditLogs";
+import { AddPostModerationAndImageConstraints1730000000007 } from "../src/database/migrations/1730000000007-AddPostModerationAndImageConstraints";
 
-/**
- * Database checks from the manual (Part 6). They prove that the RULES live in the database,
- * not only in application code. Every module owner can add checks for their own tables here.
- */
 describe("Database rules (migrations from an empty database)", () => {
   let db: DataSource;
 
@@ -98,11 +96,12 @@ describe("Database rules (migrations from an empty database)", () => {
         CreateRentsAndReviews1730000000004,
         CreateChat1730000000005,
         CreateAuditLogs1730000000006,
+        AddPostModerationAndImageConstraints1730000000007,
       ],
     });
     await ds.initialize();
     try {
-      for (let i = 0; i < 6; i++) await ds.undoLastMigration();
+      for (let i = 0; i < 7; i++) await ds.undoLastMigration();
       const left = await ds.query(`SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name <> 'migrations'`);
       expect(left).toHaveLength(0);
       const types = await ds.query(`SELECT typname FROM pg_type t JOIN pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname='public' AND t.typtype='e'`);
@@ -160,7 +159,7 @@ describe("Database rules (migrations from an empty database)", () => {
       const p = await post(a);
       const row = (await db.query(`SELECT status, rent_status FROM posts WHERE id = $1`, [p]))[0];
       expect(row).toEqual({ status: "ACTIVE", rent_status: "OPEN" });
-      await db.query(`INSERT INTO post_images (post_id, file_path) VALUES ($1, '/uploads/a.jpg'), ($1, '/uploads/b.jpg')`, [p]);
+      await db.query(`INSERT INTO post_images (post_id, file_path, position) VALUES ($1, '/uploads/a.jpg', 0), ($1, '/uploads/b.jpg', 1)`, [p]);
       await db.query(`DELETE FROM posts WHERE id = $1`, [p]);
       expect((await db.query(`SELECT count(*)::int AS n FROM post_images WHERE post_id = $1`, [p]))[0].n).toBe(0);
     });
